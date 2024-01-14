@@ -7,9 +7,11 @@ from bs4 import BeautifulSoup
 
 all_jobs = []
 all_position = []
+
 class Scraper():
     def __init__(self, keyword, url='https://remoteok.com/'):
         self.url = url + f'remote-{keyword}-jobs'
+        print(f'scraping {url}...')
 
     def scraping_jobs(self):
         response = requests.get(self.url, headers={
@@ -46,5 +48,3 @@ keywords = [
 ]
 scrap = Scraper(keyword = keywords[0])
 scrap.scraping_jobs()
-
-asdasdasdasaasdas
