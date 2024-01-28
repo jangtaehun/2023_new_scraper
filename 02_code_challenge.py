@@ -14,6 +14,7 @@ class Scraper():
         print(f'scraping {url}...')
 
     def scraping_jobs(self):
+        #개발자 모드 -> Network -> User-Agent
         response = requests.get(self.url, headers={
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'})
         soup = BeautifulSoup(response.content, 'html.parser')  # content / 넘겨준 데이터가 어떤 종류의 형태이지를 알려줘야 한다.
