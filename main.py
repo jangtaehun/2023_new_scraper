@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 # class_ -> python에는 class가 있다.
 # find("") -> 맨 앞에 있는 하나만 가져온다.
@@ -42,4 +43,11 @@ for x in range(total_pages):
     url = f'https://weworkremotely.com/remote-full-time-jobs?page={x+1}'
     scrape_page(url)
 
-print(all_jobs)
+# print(all_jobs)
+
+file = open("jobs.csv", "w", encoding="utf-8")
+writter = csv.writer(file)
+writter.writerow(['Title', 'Company', 'Position', 'region', 'url']) #writerow는 list를 넣어줘야 한다.
+for job in all_jobs:
+    writter.writerow(job.values())
+file.close()
