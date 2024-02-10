@@ -57,7 +57,7 @@ class Puppy(Dog):
         super().__init__(name, feed, 3)
         self.spoiled = True
     def woof_woof(self):
-        print("woof")
+        print("woof!!!")
 
 
 class guard_dog(Dog):

@@ -61,3 +61,10 @@ print(jobs_db)
     # time.sleep(3)
 
 # page.screenshot(path='screenshot.png')
+
+# file = open("jobs.csv", "w", encoding="utf-8")
+# writter = csv.writer(file)
+# writter.writerow(['Title', 'Company', 'Position', 'region', 'url']) #writerow는 list를 넣어줘야 한다.
+# for job in all_jobs:
+#     writter.writerow(job.values())
+# file.close()

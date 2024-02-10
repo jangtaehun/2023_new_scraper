@@ -1,53 +1,53 @@
-import requests
-from bs4 import BeautifulSoup
-import csv
+# import wwr
+from remote import Scraper
+from file import save
+from flask import Flask, render_template, request, redirect, send_file
 
-# class_ -> python에는 class가 있다.
-# find("") -> 맨 앞에 있는 하나만 가져온다.
-# _ -> 무시
+# save_wwr = wwr.scrape_page("https://weworkremotely.com/remote-full-time-jobs?page=1")
 
-# url = "https://weworkremotely.com/categories/remote-full-stack-programming-jobs"
+# keywords = list(map(str, input("key: ").split(",")))
+# scrap = remote.Scraper(keywords=keywords)
+# scrap.scraping_jobs()
 
-all_jobs = []
-def scrape_page(url):
-    print(f'scraping {url}...')
-    # response.status_code
-    # response.content #그 page의 source code를 줘야한다.
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    #첫 번째 매개변수 - content / 두 번째 매개변수 - 넘겨준 데이터가 어떤 종류의 형태이지를 알려줘야 한다.
 
-    jobs = soup.find("section", class_='jobs').find_all("li")[1:-1]
+# flask 시작
+app = Flask("new scrapper")
 
-    for job in jobs:
-        title = job.find('span', class_='title').text
-        company, position, region = job.find_all('span', class_='company')
-        url = job.find('div', class_='tooltip').nextSibling['href']
-        job_data = {
-            'title': title,
-            'company': company.text,
-            'position': position.text,
-            'region': region.text,
-            'url': f"https://weworkremotely.com/{url}"
-        }
-        all_jobs.append(job_data)
+db = {}
 
-def get_pages(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    return len(soup.find('div', class_='pagination').find_all('span', class_='page'))
 
-total_pages = get_pages('https://weworkremotely.com/remote-full-time-jobs?page=1')
+@app.route("/")
+def home():
+    return render_template("home.html")
 
-for x in range(total_pages):
-    url = f'https://weworkremotely.com/remote-full-time-jobs?page={x+1}'
-    scrape_page(url)
 
-# print(all_jobs)
+@app.route("/search")
+def search():
+    keyword = request.args.get("keyword")
+    if keyword == None:
+        return redirect("/")
+    if keyword in db:
+        jobs = db[keyword]
+    else:
+        scrap = Scraper(keywords=keyword)
+        jobs = scrap.scraping_jobs()
+        db[keyword] = jobs
+        print(db[keyword])
+        print("\n\n\n")
+        print(db)
+    return render_template("search.html", keyword=keyword, jobs=jobs)
 
-file = open("jobs.csv", "w", encoding="utf-8")
-writter = csv.writer(file)
-writter.writerow(['Title', 'Company', 'Position', 'region', 'url']) #writerow는 list를 넣어줘야 한다.
-for job in all_jobs:
-    writter.writerow(job.values())
-file.close()
+
+@app.route("/export")
+def export():
+    keyword = request.args.get("keyword")
+    if keyword == None:
+        return redirect("/")
+    if keyword not in db:
+        return redirect(f"/search?keyword={keyword}")
+    save(keyword, db[keyword])
+    print(f"{keyword}_job.csv")
+    return send_file(f"{keyword}_jobs.csv", as_attachment=True)
+
+
+app.run("127.0.0.1", port=5000)
