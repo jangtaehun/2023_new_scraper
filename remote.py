@@ -51,10 +51,10 @@ class Scraper:
                 "region": region.text.strip(),
                 "url": urls,
             }
-            job_datas.append(job_data)
+            # job_datas.append(job_data)
             all_jobs.append(job_data)
         return all_jobs
-        save(self.keyword, job_datas)
+        # save(self.keyword, job_datas)
 
 
 # def save(keword, job_datas):

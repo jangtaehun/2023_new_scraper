@@ -11,7 +11,7 @@ from flask import Flask, render_template, request, redirect, send_file
 
 
 # flask 시작
-app = Flask("new scrapper")
+app = Flask("new scraper")
 
 db = {}
 
